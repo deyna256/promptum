@@ -1,0 +1,60 @@
+from datetime import datetime
+
+import pytest
+
+from llm_benchmark.benchmark import Report
+from llm_benchmark.core import Metrics, TestCase, TestResult
+from llm_benchmark.validation import Contains
+
+
+@pytest.fixture
+def sample_results() -> list[TestResult]:
+    return [
+        TestResult(
+            test_case=TestCase(
+                name="test1",
+                prompt="prompt",
+                model="model1",
+                validator=Contains("test"),
+                tags=("math", "easy"),
+            ),
+            response="test response",
+            passed=True,
+            metrics=Metrics(latency_ms=100.0, cost_usd=0.01),
+            validation_details={},
+            timestamp=datetime.now(),
+        ),
+        TestResult(
+            test_case=TestCase(
+                name="test2",
+                prompt="prompt",
+                model="model1",
+                validator=Contains("test"),
+                tags=("geography",),
+            ),
+            response="fail response",
+            passed=False,
+            metrics=Metrics(latency_ms=150.0, cost_usd=0.02),
+            validation_details={},
+            timestamp=datetime.now(),
+        ),
+        TestResult(
+            test_case=TestCase(
+                name="test3",
+                prompt="prompt",
+                model="model2",
+                validator=Contains("test"),
+                tags=("math",),
+            ),
+            response="test response",
+            passed=True,
+            metrics=Metrics(latency_ms=120.0, cost_usd=0.015),
+            validation_details={},
+            timestamp=datetime.now(),
+        ),
+    ]
+
+
+@pytest.fixture
+def sample_report(sample_results: list[TestResult]) -> Report:
+    return Report(results=sample_results, metadata={"version": "1.0"})
