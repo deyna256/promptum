@@ -1,3 +1,4 @@
+import asyncio
 import time
 from typing import Any
 
@@ -75,8 +76,11 @@ class OpenRouterClient:
 
                 if response.status_code == 200:
                     latency_ms = (time.perf_counter() - start_time) * 1000
-                    data = response.json()
-                    content = data["choices"][0]["message"]["content"]
+                    try:
+                        data = response.json()
+                        content = data["choices"][0]["message"]["content"]
+                    except (KeyError, IndexError, TypeError) as e:
+                        raise RuntimeError(f"Invalid API response structure: {e}") from e
 
                     usage = data.get("usage", {})
                     metrics = Metrics(
