@@ -1,6 +1,5 @@
 import json
 import re
-from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
@@ -92,16 +91,20 @@ class JsonSchema:
 
 
 @dataclass(frozen=True, slots=True)
-class CustomValidator:
-    func: Callable[[str], bool]
+class PlaceholderValidator:
+    """
+    Placeholder validator for deserialized reports.
+
+    Used when original validator cannot be reconstructed from storage.
+    Always returns True. Original validator logic is not preserved.
+    """
     description: str
 
     def validate(self, response: str) -> tuple[bool, dict[str, Any]]:
-        try:
-            passed = self.func(response)
-            return passed, {"custom_validation": True}
-        except Exception as e:
-            return False, {"error": f"Validation error: {e}"}
+        return True, {
+            "placeholder": True,
+            "note": "Original validator could not be reconstructed"
+        }
 
     def describe(self) -> str:
         return self.description

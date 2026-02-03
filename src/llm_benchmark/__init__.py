@@ -1,7 +1,6 @@
 from llm_benchmark.benchmark import Benchmark, Report
 from llm_benchmark.core import Metrics, RetryConfig, RetryStrategy, TestCase, TestResult
 from llm_benchmark.execution import Runner
-from llm_benchmark.hooks import BenchmarkHook
 from llm_benchmark.providers import LLMProvider, OpenRouterClient
 from llm_benchmark.serialization import (
     HTMLSerializer,
@@ -12,7 +11,6 @@ from llm_benchmark.serialization import (
 from llm_benchmark.storage import FileStorage, ResultStorage
 from llm_benchmark.validation import (
     Contains,
-    CustomValidator,
     ExactMatch,
     JsonSchema,
     Regex,
@@ -32,7 +30,6 @@ __all__ = [
     "Contains",
     "Regex",
     "JsonSchema",
-    "CustomValidator",
     "LLMProvider",
     "OpenRouterClient",
     "Runner",
@@ -44,5 +41,4 @@ __all__ = [
     "HTMLSerializer",
     "ResultStorage",
     "FileStorage",
-    "BenchmarkHook",
 ]

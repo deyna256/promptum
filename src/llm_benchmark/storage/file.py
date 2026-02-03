@@ -8,7 +8,7 @@ from llm_benchmark.benchmark.report import Report
 from llm_benchmark.core.metrics import Metrics
 from llm_benchmark.core.result import TestResult
 from llm_benchmark.core.test_case import TestCase
-from llm_benchmark.validation.validators import CustomValidator
+from llm_benchmark.validation.validators import PlaceholderValidator
 
 
 class FileStorage:
@@ -116,17 +116,13 @@ class FileStorage:
 
     @staticmethod
     def _deserialize_report(data: dict[str, Any]) -> Report:
-        def placeholder_validator(_: str) -> bool:
-            return True
-
         results = []
         for r in data["results"]:
             test_case = TestCase(
                 name=r["test_case"]["name"],
                 prompt=r["test_case"]["prompt"],
                 model=r["test_case"]["model"],
-                validator=CustomValidator(
-                    func=placeholder_validator,
+                validator=PlaceholderValidator(
                     description=r["test_case"]["validator_description"],
                 ),
                 tags=tuple(r["test_case"]["tags"]),
