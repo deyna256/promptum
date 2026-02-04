@@ -23,10 +23,6 @@ cov-html:
     uv run pytest tests/ --cov-report=html
     xdg-open htmlcov/index.html
 
-# Open benchmark HTML report
-report:
-    xdg-open results/report.html
-
 # Clean up generated files and caches
 clean:
     rm -rf .pytest_cache .ruff_cache .coverage htmlcov results/
