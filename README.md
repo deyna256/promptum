@@ -55,15 +55,12 @@ for attempt in range(max_retries):
         break
     except Exception:
         sleep(2 ** attempt)
-
-# Export results manually
-json.dump(results, open("results.json", "w"))
 ```
 
 **After promptum:**
 ```python
 report = await benchmark.run_async()
-HTMLSerializer().serialize(report)  # Beautiful HTML report
+summary = report.get_summary()  # Metrics captured automatically
 ```
 
 ---
@@ -113,7 +110,6 @@ python your_script.py
 - [x] **Smart Validation** - ExactMatch, Contains, Regex, JsonSchema, or write your own
 - [x] **Automatic Retries** - Exponential/linear backoff with configurable attempts
 - [x] **Metrics Tracking** - Latency, tokens, cost - automatically captured
-- [x] **Beautiful Reports** - JSON, YAML, or interactive HTML with charts
 - [x] **Async by Default** - Run 100 tests in parallel without breaking a sweat
 - [x] **Type Safe** - Full type hints, catches errors before runtime
 - [x] **Zero Config** - No YAML files, no setup scripts, just Python
@@ -151,13 +147,10 @@ tests = [
 benchmark.add_tests(tests)
 report = await benchmark.run_async()
 
-# Export as HTML
-from promptum import HTMLSerializer
-html = HTMLSerializer().serialize(report)
-open("comparison.html", "w").write(html)
+# Side-by-side model comparison
+for model, summary in report.compare_models().items():
+    print(f"{model}: {summary['pass_rate']:.0%} pass rate, {summary['avg_latency_ms']:.0f}ms avg")
 ```
-
-Open `comparison.html` in your browser - see side-by-side model performance with charts.
 
 ---
 
