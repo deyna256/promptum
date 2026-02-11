@@ -6,7 +6,7 @@
 ![Async](https://img.shields.io/badge/Async-First-green?style=for-the-badge)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-**Benchmark LLMs Like a Pro.**
+**Test LLMs Like a Pro.**
 
 Stop writing boilerplate to test LLMs. Start getting results.
 
@@ -16,17 +16,17 @@ Stop writing boilerplate to test LLMs. Start getting results.
 
 ## What's This?
 
-A dead-simple Python library for benchmarking LLM providers. Write tests once, run them across any model, get structured results.
+A dead-simple Python library for testing LLM providers. Write tests once, run them across any model, get structured results.
 
 ```python
-benchmark = Benchmark(provider=client, name="my_test")
-benchmark.add_test(TestCase(
+session = Session(provider=client, name="my_test")
+session.add_test(Prompt(
     name="basic_math",
     prompt="What is 2+2?",
     model="gpt-3.5-turbo",
     validator=Contains("4")
 ))
-report = await benchmark.run_async()
+report = await session.run_async()
 ```
 
 That's it. No setup. No config files. Just results.
@@ -60,7 +60,7 @@ for attempt in range(max_retries):
 
 **After promptum:**
 ```python
-report = await benchmark.run_async()
+report = await session.run_async()
 summary = report.get_summary()  # Metrics captured automatically
 ```
 
@@ -75,20 +75,20 @@ export OPENROUTER_API_KEY="your-key"
 
 ```python
 import asyncio
-from promptum import Benchmark, TestCase, OpenRouterClient, Contains
+from promptum import Session, Prompt, OpenRouterClient, Contains
 
 async def main():
     async with OpenRouterClient(api_key="your-key") as client:
-        benchmark = Benchmark(provider=client, name="quick_test")
+        session = Session(provider=client, name="quick_test")
 
-        benchmark.add_test(TestCase(
+        session.add_test(Prompt(
             name="basic_math",
             prompt="What is 15 * 7? Reply with just the number.",
             model="openai/gpt-3.5-turbo",
             validator=Contains("105")
         ))
 
-        report = await benchmark.run_async()
+        report = await session.run_async()
         summary = report.get_summary()
 
         print(f"✓ {summary.passed}/{summary.total} tests passed")
@@ -123,26 +123,26 @@ Compare GPT-4 vs Claude on your tasks:
 
 ```python
 import asyncio
-from promptum import Benchmark, TestCase, Contains, Regex, OpenRouterClient
+from promptum import Session, Prompt, Contains, Regex, OpenRouterClient
 
 async def main():
     async with OpenRouterClient(api_key="your-key") as client:
-        benchmark = Benchmark(provider=client, name="model_comparison")
+        session = Session(provider=client, name="model_comparison")
 
-        benchmark.add_tests([
-            TestCase(
+        session.add_tests([
+            Prompt(
                 name="json_output_gpt4",
                 prompt='Output JSON: {"status": "ok"}',
                 model="openai/gpt-4",
                 validator=Regex(r'\{"status":\s*"ok"\}')
             ),
-            TestCase(
+            Prompt(
                 name="json_output_claude",
                 prompt='Output JSON: {"status": "ok"}',
                 model="anthropic/claude-3-5-sonnet",
                 validator=Regex(r'\{"status":\s*"ok"\}')
             ),
-            TestCase(
+            Prompt(
                 name="creative_writing",
                 prompt="Write a haiku about Python",
                 model="openai/gpt-4",
@@ -150,7 +150,7 @@ async def main():
             ),
         ])
 
-        report = await benchmark.run_async()
+        report = await session.run_async()
 
         # Side-by-side model comparison
         for model, model_report in report.group_by(lambda r: r.test_case.model).items():
@@ -198,7 +198,7 @@ class MyProvider:  # No inheritance needed
         return response, metrics
 
 # It just works
-benchmark = Benchmark(provider=MyProvider())
+session = Session(provider=MyProvider())
 ```
 
 Cleaner. More flexible. More Pythonic.
