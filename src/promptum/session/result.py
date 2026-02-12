@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from promptum.providers.metrics import Metrics
@@ -14,4 +14,4 @@ class TestResult:
     metrics: Metrics | None
     validation_details: dict[str, Any]
     execution_error: str | None = None
-    timestamp: datetime = field(default_factory=lambda:datetime.now(timezone.utc))
+    timestamp: datetime = field(default_factory=lambda:datetime.now(UTC))

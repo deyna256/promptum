@@ -107,13 +107,13 @@ class OpenRouterClient:
                 if attempt < config.max_attempts - 1:
                     delay = self._calculate_delay(attempt, config)
                     retry_delays.append(delay)
-                    await asyncio.sleep(delay)
+                    await self._sleep(delay)
 
             except (httpx.TimeoutException, httpx.NetworkError) as e:
                 if attempt < config.max_attempts - 1:
                     delay = self._calculate_delay(attempt, config)
                     retry_delays.append(delay)
-                    await asyncio.sleep(delay)
+                    await self._sleep(delay)
                 else:
                     raise RuntimeError(
                         f"Request failed after {config.max_attempts} attempts: {e}"
@@ -122,6 +122,9 @@ class OpenRouterClient:
                 raise RuntimeError(f"HTTP error {e.response.status_code}: {e.response.text}") from e
 
         raise RuntimeError(f"Request failed after {config.max_attempts} attempts")
+
+    async def _sleep(self, delay: float) -> None:
+        await asyncio.sleep(delay)
 
     def _calculate_delay(self, attempt: int, config: RetryConfig) -> float:
         if config.strategy == RetryStrategy.EXPONENTIAL_BACKOFF:
