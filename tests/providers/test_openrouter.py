@@ -1,5 +1,5 @@
 from typing import Any
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock
 
 import httpx
 import pytest
@@ -13,12 +13,11 @@ def _make_response(
     status_code: int = 200,
     json_data: dict[str, Any] | None = None,
 ) -> httpx.Response:
-    response = httpx.Response(
+    return httpx.Response(
         status_code=status_code,
         json=json_data,
         request=httpx.Request("POST", "https://fake/chat/completions"),
     )
-    return response
 
 
 # ── Context manager / init ───────────────────────────────────────────────────
@@ -273,9 +272,9 @@ async def test_generate_retries_on_429_then_succeeds(
         api_key="k", default_retry_config=retry_config_3_attempts
     ) as client:
         client._client.post = AsyncMock(side_effect=responses)
+        client._sleep = AsyncMock()
 
-        with patch("promptum.providers.openrouter.asyncio.sleep", new_callable=AsyncMock):
-            content, metrics = await client.generate(prompt="hello", model="m")
+        content, metrics = await client.generate(prompt="hello", model="m")
 
     assert content == "Hello, world!"
 
@@ -292,9 +291,9 @@ async def test_generate_retries_on_500_then_succeeds(
         api_key="k", default_retry_config=retry_config_3_attempts
     ) as client:
         client._client.post = AsyncMock(side_effect=responses)
+        client._sleep = AsyncMock()
 
-        with patch("promptum.providers.openrouter.asyncio.sleep", new_callable=AsyncMock):
-            content, _ = await client.generate(prompt="hello", model="m")
+        content, _ = await client.generate(prompt="hello", model="m")
 
     assert content == "Hello, world!"
 
@@ -307,11 +306,9 @@ async def test_generate_exhausts_retries_raises_runtime_error(
         api_key="k", default_retry_config=retry_config_3_attempts
     ) as client:
         client._client.post = AsyncMock(side_effect=responses)
+        client._sleep = AsyncMock()
 
-        with (
-            patch("promptum.providers.openrouter.asyncio.sleep", new_callable=AsyncMock),
-            pytest.raises(RuntimeError, match="failed after 3 attempts"),
-        ):
+        with pytest.raises(RuntimeError, match="failed after 3 attempts"):
             await client.generate(prompt="hello", model="m")
 
 
@@ -338,9 +335,9 @@ async def test_generate_retries_on_timeout_then_succeeds(
                 _make_response(200, successful_api_response),
             ]
         )
+        client._sleep = AsyncMock()
 
-        with patch("promptum.providers.openrouter.asyncio.sleep", new_callable=AsyncMock):
-            content, _ = await client.generate(prompt="hello", model="m")
+        content, _ = await client.generate(prompt="hello", model="m")
 
     assert content == "Hello, world!"
 
@@ -358,9 +355,9 @@ async def test_generate_retries_on_network_error_then_succeeds(
                 _make_response(200, successful_api_response),
             ]
         )
+        client._sleep = AsyncMock()
 
-        with patch("promptum.providers.openrouter.asyncio.sleep", new_callable=AsyncMock):
-            content, _ = await client.generate(prompt="hello", model="m")
+        content, _ = await client.generate(prompt="hello", model="m")
 
     assert content == "Hello, world!"
 
@@ -374,11 +371,9 @@ async def test_generate_timeout_exhausts_retries_raises_runtime_error(
         client._client.post = AsyncMock(
             side_effect=httpx.ReadTimeout("timed out"),
         )
+        client._sleep = AsyncMock()
 
-        with (
-            patch("promptum.providers.openrouter.asyncio.sleep", new_callable=AsyncMock),
-            pytest.raises(RuntimeError, match="failed after 3 attempts"),
-        ):
+        with pytest.raises(RuntimeError, match="failed after 3 attempts"):
             await client.generate(prompt="hello", model="m")
 
 
@@ -395,9 +390,9 @@ async def test_generate_retry_delays_recorded_in_metrics(
         api_key="k", default_retry_config=retry_config_3_attempts
     ) as client:
         client._client.post = AsyncMock(side_effect=responses)
+        client._sleep = AsyncMock()
 
-        with patch("promptum.providers.openrouter.asyncio.sleep", new_callable=AsyncMock):
-            _, metrics = await client.generate(prompt="hello", model="m")
+        _, metrics = await client.generate(prompt="hello", model="m")
 
     assert len(metrics.retry_delays) == 2
     assert all(d > 0 for d in metrics.retry_delays)
@@ -472,10 +467,10 @@ async def test_generate_uses_per_call_retry_config_over_default(
     ]
     async with OpenRouterClient(api_key="k", default_retry_config=default_config) as client:
         client._client.post = AsyncMock(side_effect=responses)
+        client._sleep = AsyncMock()
 
-        with patch("promptum.providers.openrouter.asyncio.sleep", new_callable=AsyncMock):
-            content, _ = await client.generate(
-                prompt="hello", model="m", retry_config=per_call_config
-            )
+        content, _ = await client.generate(
+            prompt="hello", model="m", retry_config=per_call_config
+        )
 
     assert content == "Hello, world!"
