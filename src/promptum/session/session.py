@@ -1,4 +1,3 @@
-import asyncio
 from collections.abc import Callable, Sequence
 
 from promptum.providers.protocol import LLMProvider
@@ -28,10 +27,7 @@ class Session:
     def add_tests(self, test_cases: Sequence[Prompt]) -> None:
         self._test_cases.extend(test_cases)
 
-    def run(self) -> Report:
-        return asyncio.run(self.run_async())
-
-    async def run_async(self) -> Report:
+    async def run(self) -> Report:
         if not self._test_cases:
             return Report(results=[])
 
