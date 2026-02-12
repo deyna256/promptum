@@ -109,7 +109,7 @@ python your_script.py
 
 - [x] **100+ Models via OpenRouter** - One client for OpenAI, Anthropic, Google, and more
 - [x] **Smart Validation** - ExactMatch, Contains, Regex, JsonSchema, or write your own
-- [x] **Automatic Retries** - Exponential/linear backoff with configurable attempts
+- [x] **Automatic Retries** - Exponential/fixed-delay backoff with configurable attempts
 - [x] **Metrics Tracking** - Latency, tokens, cost - automatically captured
 - [x] **Async by Default** - Run 100 tests in parallel without breaking a sweat
 - [x] **Type Safe** - Full type hints, catches errors before runtime
