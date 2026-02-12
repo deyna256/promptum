@@ -26,7 +26,7 @@ session.add_test(Prompt(
     model="gpt-3.5-turbo",
     validator=Contains("4")
 ))
-report = await session.run_async()
+report = await session.run()
 ```
 
 That's it. No setup. No config files. Just results.
@@ -60,7 +60,7 @@ for attempt in range(max_retries):
 
 **After promptum:**
 ```python
-report = await session.run_async()
+report = await session.run()
 summary = report.get_summary()  # Metrics captured automatically
 ```
 
@@ -88,7 +88,7 @@ async def main():
             validator=Contains("105")
         ))
 
-        report = await session.run_async()
+        report = await session.run()
         summary = report.get_summary()
 
         print(f"✓ {summary.passed}/{summary.total} tests passed")
@@ -150,7 +150,7 @@ async def main():
             ),
         ])
 
-        report = await session.run_async()
+        report = await session.run()
 
         # Side-by-side model comparison
         for model, model_report in report.group_by(lambda r: r.test_case.model).items():
