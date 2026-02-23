@@ -1,4 +1,4 @@
-name: Linter
+name: Type Checker
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  lint:
-    name: Run Ruff Linter
+  type:
+    name: Run Ty Type Checker
     runs-on: ubuntu-latest
 
     steps:
@@ -23,5 +23,5 @@ jobs:
       - name: Sync dependencies
         run: just sync
 
-      - name: Run linter
-        run: just lint
+      - name: Run type checker
+        run: just type
