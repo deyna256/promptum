@@ -39,8 +39,8 @@ class OpenRouterClient:
         return self
 
     async def __aexit__(self, *args: Any) -> None:
-        if self._client:
-            await self._client.aclose()
+        assert self._client is not None
+        await self._client.aclose()
 
     async def generate(
         self,
