@@ -20,12 +20,12 @@ test:
 
 # Generate and open HTML coverage report
 [unix]
-cov-html:
+cov:
     uv run pytest tests/ --cov-report=html
     {{ if os() == "linux" { "xdg-open" } else { "open" } }} htmlcov/index.html
 
 [windows]
-cov-html:
+cov:
     uv run pytest tests/ --cov-report=html
     start htmlcov/index.html
 
