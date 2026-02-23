@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from promptum.validation.protocol import Validator
+    from promptum.validation.validator import Validator
 
 from promptum.providers.retry import RetryConfig
 

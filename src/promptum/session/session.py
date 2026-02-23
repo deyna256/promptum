@@ -1,6 +1,6 @@
 from collections.abc import Callable, Sequence
 
-from promptum.providers.protocol import LLMProvider
+from promptum.providers.provider import LLMProvider
 from promptum.session.case import Prompt
 from promptum.session.report import Report
 from promptum.session.result import TestResult

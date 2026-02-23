@@ -4,7 +4,7 @@ from collections.abc import Callable, Sequence
 import httpx
 
 from promptum.providers.exceptions import ProviderError
-from promptum.providers.protocol import LLMProvider
+from promptum.providers.provider import LLMProvider
 from promptum.session.case import Prompt
 from promptum.session.result import TestResult
 

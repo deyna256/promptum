@@ -1,4 +1,4 @@
-from promptum.validation.protocol import Validator
+from promptum.validation.validator import Validator
 from promptum.validation.validators import (
     Contains,
     ExactMatch,

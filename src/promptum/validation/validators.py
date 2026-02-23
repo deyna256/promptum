@@ -2,7 +2,7 @@ import json
 import re
 from typing import Any
 
-from promptum.validation.protocol import Validator
+from promptum.validation.validator import Validator
 
 
 class ExactMatch(Validator):
