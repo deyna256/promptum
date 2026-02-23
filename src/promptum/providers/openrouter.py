@@ -12,10 +12,11 @@ from promptum.providers.exceptions import (
     ProviderTransientError,
 )
 from promptum.providers.metrics import Metrics
+from promptum.providers.protocol import LLMProvider
 from promptum.providers.retry import RetryConfig, RetryStrategy
 
 
-class OpenRouterClient:
+class OpenRouterClient(LLMProvider):
     def __init__(
         self,
         api_key: str,

@@ -1,9 +1,11 @@
-from typing import Any, Protocol
+from abc import ABC, abstractmethod
+from typing import Any
 
 from promptum.providers.metrics import Metrics
 
 
-class LLMProvider(Protocol):
+class LLMProvider(ABC):
+    @abstractmethod
     async def generate(
         self,
         prompt: str,
@@ -19,4 +21,3 @@ class LLMProvider(Protocol):
         Returns:
             (response_text, metrics)
         """
-        ...
