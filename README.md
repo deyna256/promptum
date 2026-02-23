@@ -34,7 +34,7 @@ report = await session.run()
 summary = report.get_summary()
 ```
 
-No YAML. No inheritance hierarchies. Just Python you can read in 30 seconds.
+No YAML. No config files. Just Python you can read in 30 seconds.
 
 ---
 
@@ -83,7 +83,7 @@ promptum replaces all of that with a single coherent API:
 - [x] **Automatic Retries** — exponential/fixed-delay backoff with configurable attempts
 - [x] **Metrics Tracking** — latency, tokens, cost — automatically captured
 - [x] **Async by Default** — run tests in parallel with concurrency control
-- [x] **Protocol-Based** — extend with custom providers and validators, no inheritance needed
+- [x] **Extensible** — implement `LLMProvider` or `Validator` to plug in any model or validation logic
 - [x] **Type Safe** — full type hints, catches errors before runtime
 
 ---
@@ -91,8 +91,8 @@ promptum replaces all of that with a single coherent API:
 ## Documentation
 
 - [Session & Testing](docs/session.md) — Session, Prompt, Report, Summary, TestResult
-- [Providers](docs/providers.md) — LLMProvider protocol, OpenRouterClient, Metrics, Retry, Exceptions
-- [Validation](docs/validation.md) — Validator protocol, ExactMatch, Contains, Regex, JsonSchema
+- [Providers](docs/providers.md) — LLMProvider, OpenRouterClient, Metrics, Retry, Exceptions
+- [Validation](docs/validation.md) — Validator, ExactMatch, Contains, Regex, JsonSchema
 
 ---
 
@@ -110,11 +110,11 @@ Found a bug? Want a feature? PRs welcome!
 ```bash
 git clone https://github.com/deyna256/promptum.git
 cd promptum
-just sync       # Install dependencies
-just test       # Run tests
-just lint       # Check code style
-just format     # Format code
-just typecheck  # Type checking
+just sync     # Install dependencies
+just test     # Run tests
+just style    # Check code style
+just format   # Format code
+just type     # Type checking
 ```
 
 ---
