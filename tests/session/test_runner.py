@@ -102,6 +102,7 @@ async def test_run_provider_exception_returns_error_result(
     assert result.passed is False
     assert result.response is None
     assert result.metrics is None
+    assert result.execution_error is not None
     assert str(exception) in result.execution_error
 
 

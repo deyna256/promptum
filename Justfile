@@ -1,3 +1,4 @@
+set shell := ["powershell.exe", "-Command"]
 # Sync dependencies from pyproject.toml
 sync:
     uv sync
