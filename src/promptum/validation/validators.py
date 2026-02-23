@@ -1,13 +1,16 @@
 import json
 import re
-from dataclasses import dataclass
 from typing import Any
 
+from promptum.validation.protocol import Validator
 
-@dataclass(frozen=True, slots=True)
-class ExactMatch:
-    expected: str
-    case_sensitive: bool = True
+
+class ExactMatch(Validator):
+    __slots__ = ("expected", "case_sensitive")
+
+    def __init__(self, expected: str, case_sensitive: bool = True) -> None:
+        self.expected = expected
+        self.case_sensitive = case_sensitive
 
     def validate(self, response: str) -> tuple[bool, dict[str, Any]]:
         if self.case_sensitive:
@@ -26,10 +29,12 @@ class ExactMatch:
         return f"Exact match ({mode}): {self.expected!r}"
 
 
-@dataclass(frozen=True, slots=True)
-class Contains:
-    substring: str
-    case_sensitive: bool = True
+class Contains(Validator):
+    __slots__ = ("substring", "case_sensitive")
+
+    def __init__(self, substring: str, case_sensitive: bool = True) -> None:
+        self.substring = substring
+        self.case_sensitive = case_sensitive
 
     def validate(self, response: str) -> tuple[bool, dict[str, Any]]:
         if self.case_sensitive:
@@ -47,10 +52,12 @@ class Contains:
         return f"Contains ({mode}): {self.substring!r}"
 
 
-@dataclass(frozen=True, slots=True)
-class Regex:
-    pattern: str
-    flags: int = 0
+class Regex(Validator):
+    __slots__ = ("pattern", "flags")
+
+    def __init__(self, pattern: str, flags: int = 0) -> None:
+        self.pattern = pattern
+        self.flags = flags
 
     def validate(self, response: str) -> tuple[bool, dict[str, Any]]:
         match = re.search(self.pattern, response, self.flags)
@@ -63,9 +70,11 @@ class Regex:
         return f"Regex: {self.pattern!r}"
 
 
-@dataclass(frozen=True, slots=True)
-class JsonSchema:
-    required_keys: tuple[str, ...] = ()
+class JsonSchema(Validator):
+    __slots__ = ("required_keys",)
+
+    def __init__(self, required_keys: tuple[str, ...] = ()) -> None:
+        self.required_keys = required_keys
 
     def validate(self, response: str) -> tuple[bool, dict[str, Any]]:
         try:
