@@ -1,6 +1,4 @@
-set shell := ["powershell.exe", "-Command"]
-# Sync dependencies from pyproject.toml
-sync:
+sync: # Sync dependencies from pyproject.toml
     uv sync
 
 # Run type checking with ty
