@@ -195,6 +195,7 @@ async def test_generate_invalid_response_raises_parse_error(
 async def test_generate_retries_on_retryable_status_then_succeeds(
     successful_api_response: dict[str, Any],
     retry_config_3_attempts: RetryConfig,
+    mock_sleep: AsyncMock,
     status_code: int,
 ):
     responses = [
@@ -205,7 +206,6 @@ async def test_generate_retries_on_retryable_status_then_succeeds(
         api_key="k", default_retry_config=retry_config_3_attempts
     ) as client:
         client._client.post = AsyncMock(side_effect=responses)
-        client._sleep = AsyncMock()
 
         content, _ = await client.generate(prompt="hello", model="m")
 
@@ -214,13 +214,13 @@ async def test_generate_retries_on_retryable_status_then_succeeds(
 
 async def test_generate_exhausts_retries_raises_retry_exhausted(
     retry_config_3_attempts: RetryConfig,
+    mock_sleep: AsyncMock,
 ):
     responses = [_make_response(500) for _ in range(3)]
     async with OpenRouterClient(
         api_key="k", default_retry_config=retry_config_3_attempts
     ) as client:
         client._client.post = AsyncMock(side_effect=responses)
-        client._sleep = AsyncMock()
 
         with pytest.raises(ProviderRetryExhaustedError) as exc_info:
             await client.generate(prompt="hello", model="m")
@@ -258,6 +258,7 @@ async def test_generate_non_retryable_status_raises_http_status_error(
 async def test_generate_retries_on_transient_error_then_succeeds(
     successful_api_response: dict[str, Any],
     retry_config_3_attempts: RetryConfig,
+    mock_sleep: AsyncMock,
     exception: Exception,
 ):
     async with OpenRouterClient(
@@ -266,7 +267,6 @@ async def test_generate_retries_on_transient_error_then_succeeds(
         client._client.post = AsyncMock(
             side_effect=[exception, _make_response(200, successful_api_response)]
         )
-        client._sleep = AsyncMock()
 
         content, _ = await client.generate(prompt="hello", model="m")
 
@@ -276,6 +276,7 @@ async def test_generate_retries_on_transient_error_then_succeeds(
 async def test_generate_retry_delays_recorded_in_metrics(
     successful_api_response: dict[str, Any],
     retry_config_3_attempts: RetryConfig,
+    mock_sleep: AsyncMock,
 ):
     responses = [
         _make_response(429),
@@ -286,7 +287,6 @@ async def test_generate_retry_delays_recorded_in_metrics(
         api_key="k", default_retry_config=retry_config_3_attempts
     ) as client:
         client._client.post = AsyncMock(side_effect=responses)
-        client._sleep = AsyncMock()
 
         _, metrics = await client.generate(prompt="hello", model="m")
 
@@ -296,12 +296,12 @@ async def test_generate_retry_delays_recorded_in_metrics(
 
 async def test_generate_transient_error_exhausts_retries_raises_transient_error(
     retry_config_3_attempts: RetryConfig,
+    mock_sleep: AsyncMock,
 ):
     async with OpenRouterClient(
         api_key="k", default_retry_config=retry_config_3_attempts
     ) as client:
         client._client.post = AsyncMock(side_effect=httpx.ReadTimeout("timed out"))
-        client._sleep = AsyncMock()
 
         with pytest.raises(ProviderTransientError) as exc_info:
             await client.generate(prompt="hello", model="m")
@@ -355,6 +355,7 @@ def test_calculate_delay_fixed_returns_initial():
 
 async def test_generate_uses_per_call_retry_config_over_default(
     successful_api_response: dict[str, Any],
+    mock_sleep: AsyncMock,
 ):
     default_config = RetryConfig(max_attempts=1)
     per_call_config = RetryConfig(max_attempts=3, initial_delay=0.01, max_delay=0.1)
@@ -365,7 +366,6 @@ async def test_generate_uses_per_call_retry_config_over_default(
     ]
     async with OpenRouterClient(api_key="k", default_retry_config=default_config) as client:
         client._client.post = AsyncMock(side_effect=responses)
-        client._sleep = AsyncMock()
 
         content, _ = await client.generate(
             prompt="hello", model="m", retry_config=per_call_config

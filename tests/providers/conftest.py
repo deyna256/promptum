@@ -1,4 +1,5 @@
 from typing import Any
+from unittest.mock import AsyncMock
 
 import pytest
 
@@ -45,6 +46,13 @@ def minimal_api_response() -> dict[str, Any]:
 @pytest.fixture
 def no_retry_config() -> RetryConfig:
     return RetryConfig(max_attempts=1)
+
+
+@pytest.fixture
+def mock_sleep(monkeypatch: pytest.MonkeyPatch) -> AsyncMock:
+    mock = AsyncMock()
+    monkeypatch.setattr("asyncio.sleep", mock)
+    return mock
 
 
 @pytest.fixture

@@ -142,9 +142,6 @@ class OpenRouterClient(LLMProvider):
     ) -> None:
         delay = self._calculate_delay(attempt, config)
         retry_delays.append(delay)
-        await self._sleep(delay)
-
-    async def _sleep(self, delay: float) -> None:
         await asyncio.sleep(delay)
 
     def _calculate_delay(self, attempt: int, config: RetryConfig) -> float:
