@@ -123,15 +123,11 @@ class OpenRouterClient(LLMProvider):
                 last_response_body = response.text
 
                 if attempt < config.max_attempts - 1:
-                    delay = self._calculate_delay(attempt, config)
-                    retry_delays.append(delay)
-                    await self._sleep(delay)
+                    await self._apply_retry_delay(attempt, config, retry_delays)
 
             except (httpx.TimeoutException, httpx.NetworkError) as e:
                 if attempt < config.max_attempts - 1:
-                    delay = self._calculate_delay(attempt, config)
-                    retry_delays.append(delay)
-                    await self._sleep(delay)
+                    await self._apply_retry_delay(attempt, config, retry_delays)
                 else:
                     raise ProviderTransientError(
                         config.max_attempts, retry_delays
@@ -140,6 +136,13 @@ class OpenRouterClient(LLMProvider):
         raise ProviderRetryExhaustedError(
             config.max_attempts, last_status_code, last_response_body, retry_delays
         )
+
+    async def _apply_retry_delay(
+        self, attempt: int, config: RetryConfig, retry_delays: list[float]
+    ) -> None:
+        delay = self._calculate_delay(attempt, config)
+        retry_delays.append(delay)
+        await self._sleep(delay)
 
     async def _sleep(self, delay: float) -> None:
         await asyncio.sleep(delay)
