@@ -50,6 +50,5 @@ class ProviderRetryExhaustedError(ProviderError):
         self.last_response_body = last_response_body
         self.retry_delays = retry_delays
         super().__init__(
-            f"Request failed after {attempts} attempts"
-            f" (last status {last_status_code})"
+            f"Request failed after {attempts} attempts (last status {last_status_code})"
         )

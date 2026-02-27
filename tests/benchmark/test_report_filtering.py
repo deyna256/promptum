@@ -40,3 +40,10 @@ def test_report_group_by_model(sample_report: Report) -> None:
     assert "model2" in grouped
     assert len(grouped["model1"].results) == 2
     assert len(grouped["model2"].results) == 1
+
+
+def test_report_no_filter(sample_report: Report) -> None:
+    unfiltered = sample_report.filter(model=None, tags=None, passed=None)
+    assert isinstance(unfiltered, Report)
+    assert len(unfiltered.results) == len(sample_report.results)
+    assert unfiltered == sample_report

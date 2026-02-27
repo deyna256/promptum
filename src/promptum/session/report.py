@@ -15,8 +15,8 @@ class Report:
     def get_summary(self) -> Summary:
         total = len(self.results)
         passed = sum(1 for r in self.results if r.passed)
-        execution_errors=self._count_execution_errors()
-        validation_failures=self._count_validation_failures()
+        execution_errors = self._count_execution_errors()
+        validation_failures = self._count_validation_failures()
 
         latencies = [r.metrics.latency_ms for r in self.results if r.metrics]
         total_cost = sum(r.metrics.cost_usd or 0 for r in self.results if r.metrics)
@@ -71,8 +71,4 @@ class Report:
         return sum(1 for r in self.results if r.execution_error is not None)
 
     def _count_validation_failures(self) -> int:
-        return sum(
-            1
-            for r in self.results
-            if not r.passed and r.execution_error is None
-        )
+        return sum(1 for r in self.results if not r.passed and r.execution_error is None)

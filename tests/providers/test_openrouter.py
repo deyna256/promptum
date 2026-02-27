@@ -367,8 +367,6 @@ async def test_generate_uses_per_call_retry_config_over_default(
         client._client.post = AsyncMock(side_effect=responses)
         client._sleep = AsyncMock()
 
-        content, _ = await client.generate(
-            prompt="hello", model="m", retry_config=per_call_config
-        )
+        content, _ = await client.generate(prompt="hello", model="m", retry_config=per_call_config)
 
     assert content == "Hello, world!"

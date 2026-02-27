@@ -32,6 +32,7 @@ def test_regex_describe_includes_validator_name_and_pattern() -> None:
     assert "Regex" in description
     assert r"\d+" in description
 
+
 def test_regex_with_ignorecase_flag() -> None:
     validator = Regex(r"hello", flags=re.IGNORECASE)
 

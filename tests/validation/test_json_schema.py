@@ -42,6 +42,7 @@ def test_json_schema_describe_includes_validator_info_and_required_keys() -> Non
     assert "a" in description
     assert "b" in description
 
+
 def test_json_schema_describe_without_required_keys() -> None:
     validator = JsonSchema(required_keys=())
     description = validator.describe()
