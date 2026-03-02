@@ -1,4 +1,16 @@
-from promptum.providers import LLMProvider, Metrics, OpenRouterClient, RetryConfig, RetryStrategy
+from promptum.providers import (
+    LLMProvider,
+    Metrics,
+    OpenRouterClient,
+    ProviderError,
+    ProviderHTTPStatusError,
+    ProviderNotInitializedError,
+    ProviderResponseParseError,
+    ProviderRetryExhaustedError,
+    ProviderTransientError,
+    RetryConfig,
+    RetryStrategy,
+)
 from promptum.session import Prompt, Report, Runner, Session, Summary, TestResult
 from promptum.validation import (
     Contains,
@@ -24,6 +36,12 @@ __all__ = [
     "JsonSchema",
     "LLMProvider",
     "OpenRouterClient",
+    "ProviderError",
+    "ProviderHTTPStatusError",
+    "ProviderNotInitializedError",
+    "ProviderResponseParseError",
+    "ProviderRetryExhaustedError",
+    "ProviderTransientError",
     "Runner",
     "Session",
     "Report",
