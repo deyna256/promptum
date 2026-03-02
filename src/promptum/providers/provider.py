@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 from promptum.providers.metrics import Metrics
+from promptum.providers.retry import RetryConfig
 
 
 class LLMProvider(ABC):
@@ -13,6 +14,7 @@ class LLMProvider(ABC):
         system_prompt: str | None = None,
         temperature: float = 1.0,
         max_tokens: int | None = None,
+        retry_config: RetryConfig | None = None,
         **kwargs: Any,
     ) -> tuple[str, Metrics]:
         """
