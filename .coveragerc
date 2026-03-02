@@ -1,6 +1,7 @@
 [run]
 source = promptum
 omit = tests/*
+branch = true
 
 [report]
 exclude_lines =
