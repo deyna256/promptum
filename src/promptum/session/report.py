@@ -42,7 +42,7 @@ class Report:
         tags: Sequence[str] | None = None,
         passed: bool | None = None,
     ) -> "Report":
-        filtered = list(self.results)
+        filtered = self.results
 
         if model is not None:
             filtered = [r for r in filtered if r.test_case.model == model]
