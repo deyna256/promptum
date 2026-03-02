@@ -1,4 +1,4 @@
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 import pytest
 
@@ -22,7 +22,7 @@ def sample_results() -> list[TestResult]:
             passed=True,
             metrics=Metrics(latency_ms=100.0, cost_usd=0.01),
             validation_details={},
-            timestamp=datetime.now(UTC),
+            timestamp=datetime.now(timezone.utc),
         ),
         TestResult(
             test_case=Prompt(
@@ -36,7 +36,7 @@ def sample_results() -> list[TestResult]:
             passed=False,
             metrics=Metrics(latency_ms=150.0, cost_usd=0.02),
             validation_details={},
-            timestamp=datetime.now(UTC),
+            timestamp=datetime.now(timezone.utc),
         ),
         TestResult(
             test_case=Prompt(
@@ -50,7 +50,7 @@ def sample_results() -> list[TestResult]:
             passed=True,
             metrics=Metrics(latency_ms=120.0, cost_usd=0.015),
             validation_details={},
-            timestamp=datetime.now(UTC),
+            timestamp=datetime.now(timezone.utc),
         ),
     ]
 

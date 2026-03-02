@@ -1,5 +1,5 @@
 import asyncio
-from datetime import UTC
+from datetime import timezone
 from unittest.mock import AsyncMock, MagicMock
 
 import httpx
@@ -25,7 +25,7 @@ async def test_run_single_passing_test(
     assert result.response == "test response"
     assert result.execution_error is None
     assert result.validation_details == {"matched": True}
-    assert result.timestamp.tzinfo == UTC
+    assert result.timestamp.tzinfo == timezone.utc
 
 
 async def test_run_single_failing_validation(
