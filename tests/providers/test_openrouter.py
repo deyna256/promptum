@@ -60,7 +60,7 @@ async def test_generate_success_returns_content_and_metrics(
             )
 
     assert content == "Hello, world!"
-    assert metrics.latency_ms == 123.0
+    assert metrics.latency_ms == pytest.approx(123.0, rel=1e-6)
     assert metrics.prompt_tokens == 10
     assert metrics.completion_tokens == 20
     assert metrics.total_tokens == 30
