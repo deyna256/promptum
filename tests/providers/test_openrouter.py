@@ -1,5 +1,5 @@
 from typing import Any
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 
 import httpx
 import pytest
@@ -45,13 +45,22 @@ async def test_generate_success_returns_content_and_metrics(
     successful_api_response: dict[str, Any],
     no_retry_config: RetryConfig,
 ):
-    async with OpenRouterClient(api_key="k", default_retry_config=no_retry_config) as client:
-        client._client.post = AsyncMock(return_value=_make_response(200, successful_api_response))
+    async with OpenRouterClient(
+        api_key="k", default_retry_config=no_retry_config
+    ) as client:
+        client._client.post = AsyncMock(
+            return_value=_make_response(200, successful_api_response)
+        )
 
-        content, metrics = await client.generate(prompt="hello", model="test-model")
+        with patch("promptum.providers.openrouter.time.perf_counter") as mock_perf:
+            mock_perf.side_effect = [10.0, 10.123]
+
+            content, metrics = await client.generate(
+                prompt="hello", model="test-model"
+            )
 
     assert content == "Hello, world!"
-    assert metrics.latency_ms > 0
+    assert metrics.latency_ms == 123.0
     assert metrics.prompt_tokens == 10
     assert metrics.completion_tokens == 20
     assert metrics.total_tokens == 30
