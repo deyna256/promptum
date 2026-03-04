@@ -164,6 +164,27 @@ async def test_generate_metrics_uses_total_cost_field(
 
     assert metrics.cost_usd == 0.05
 
+async def test_generate_metrics_uses_cost_field(
+    no_retry_config: RetryConfig,
+):
+    api_response = {
+        "choices": [{"message": {"content": "Hello, world!"}}],
+        "usage": {
+            "prompt_tokens": 10,
+            "completion_tokens": 20,
+            "total_tokens": 30,
+            "cost": 0.002,
+        },
+    }
+
+    async with OpenRouterClient(api_key="k", default_retry_config=no_retry_config) as client:
+        client._client.post = AsyncMock(return_value=_make_response(200, api_response))
+
+        content, metrics = await client.generate(prompt="hello", model="test-model")
+
+    assert content == "Hello, world!"
+    assert metrics.cost_usd == 0.002
+
 
 async def test_generate_rejects_reserved_field_override():
     async with OpenRouterClient(api_key="test-key") as client:
