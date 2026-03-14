@@ -1,4 +1,4 @@
-from promptum.validation import JsonSchema
+from promptum.validation.validators import JsonSchema
 
 
 def test_json_schema_valid(json_schema_validator: JsonSchema) -> None:
@@ -48,3 +48,34 @@ def test_json_schema_describe_without_required_keys() -> None:
     description = validator.describe()
 
     assert description == "Valid JSON object"
+
+
+class TestJsonSchema:
+    def test_valid_dict(self):
+        validator = JsonSchema()
+        passed, details = validator.validate('{"name": "Shreyas"}')
+        assert passed is True
+
+    def test_array_returns_false(self):
+        validator = JsonSchema()
+        passed, details = validator.validate("[1, 2, 3]")
+        assert passed is False
+        assert "error" in details
+
+    def test_number_returns_false(self):
+        validator = JsonSchema()
+        passed, details = validator.validate("42")
+        assert passed is False
+        assert "error" in details
+
+    def test_invalid_json_returns_false(self):
+        validator = JsonSchema()
+        passed, details = validator.validate("Shreyas")
+        assert passed is False
+        assert "error" in details
+
+    def test_missing_required_keys(self):
+        validator = JsonSchema(required_keys=("name", "age"))
+        passed, details = validator.validate('{"name": "Shreyas"}')
+        assert passed is False
+        assert "age" in details["missing_keys"]
