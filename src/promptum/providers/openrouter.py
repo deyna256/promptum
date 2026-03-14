@@ -53,7 +53,7 @@ class OpenRouterClient(LLMProvider):
         retry_config: RetryConfig | None = None,
         **kwargs: Any,
     ) -> tuple[str, Metrics]:
-        if not self._client:
+        if self._client is None:
             raise ProviderNotInitializedError()
 
         config = retry_config or self.default_retry_config
